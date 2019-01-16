@@ -15,6 +15,17 @@ class Design extends Model
         'name',
         'number',
         'price',
-        'image'
+        'image',
+        'user_id'
     ];
+
+
+    /**
+     * A design is owned by a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function owner() {
+        return $this->belongsTo(User::class);
+    }
 }

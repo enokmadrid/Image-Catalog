@@ -26,4 +26,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    /**
+     * A user can have many designs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function designs() {
+        return $this->hasMany(Design::class);
+    }
 }

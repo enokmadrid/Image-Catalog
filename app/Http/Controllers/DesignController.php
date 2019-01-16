@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Design;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
@@ -15,7 +16,7 @@ class DesignController extends Controller {
      */
     public function index() {
         // get all the designs
-        $designs = Design::all();
+        $designs = Auth::user()->designs;
 
         // load the view and pass the designs
         return view('designs.index')->with('designs', $designs);
@@ -38,6 +39,7 @@ class DesignController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+
         // validate
         $request->validate([
             'name'      => 'required',
@@ -45,7 +47,6 @@ class DesignController extends Controller {
             'price'     => 'required | numeric',
             'image'     => 'required | mimes:jpeg,png,jpg | max:2048',
         ]);
-
 
         // Move Image
         $imagePath = "";
@@ -67,8 +68,8 @@ class DesignController extends Controller {
             'image' => $imagePath,
         ];
 
-        // store
-        Design::create($design);
+        // create and store by this user
+        Auth::user()->designs()->create($design);
 
         // redirect
         Session::flash('message', 'Successfully created design!');

@@ -15,11 +15,17 @@ class CreateDesignsTable extends Migration
     {
         Schema::create('designs', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('user_id');
             $table->string('name', 255);
             $table->string('number', 6)->nullable();
             $table->float('price', 8, 2);
             $table->string('image')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
         });
     }
 
