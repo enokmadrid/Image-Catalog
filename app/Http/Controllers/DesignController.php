@@ -23,10 +23,7 @@ class DesignController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        // check if the user is authorized
-        if ( Auth::guest() ) {
-            return view('auth.login');
-        }
+
         // get all the designs of the user
         $designs = Auth::user()->designs;
 
