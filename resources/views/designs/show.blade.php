@@ -7,11 +7,13 @@
                 {{ session('status') }}
             </div>
         @endif
-
-        You are logged in!
     </div>
 
-    <h1>Showing {{ $design->name }}</h1>
+    <h1 class="text-center">Showing {{ $design->name }}</h1>
+
+
+
+
 
     <div class="jumbotron text-center">
         <h2>{{ $design->name }}</h2>
@@ -21,6 +23,19 @@
         </p>
 
         <img src="{{ asset($design->image) }}" alt="image">
+    </div>
+
+    <div class="action-bar">
+
+        <a href="{{ url('designs') }}" class="pull-left btn btn-small btn-info"><-- Back to designs</a>
+        <!-- Delete this design -->
+    {!! Form::open(['method' => 'DELETE','route' => ['designs.destroy', $design->id],'style'=>'display:inline']) !!}
+    {!! Form::submit('Delete', ['class' => 'pull-right btn btn-danger']) !!}
+    {!! Form::close() !!}
+
+    <!-- edit this design (uses the edit method found at GET /designs/{id}/edit -->
+        <a class="pull-right btn btn-small btn-success" href="{{ URL::to('designs/' . $design->id . '/edit') }}">Edit this design</a>
+
     </div>
 
 @endsection
