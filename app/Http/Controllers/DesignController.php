@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class DesignController extends Controller {
+
+    /**
+     * DesignController constructor.
+     */
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +24,7 @@ class DesignController extends Controller {
      */
     public function index() {
         // check if the user is authorized
-        if ( ! Auth::user() ) {
+        if ( Auth::guest() ) {
             return view('auth.login');
         }
         // get all the designs of the user
