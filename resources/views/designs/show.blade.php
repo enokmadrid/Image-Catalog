@@ -22,7 +22,7 @@
             <strong>Price:</strong> {{ $design->price }}
         </p>
 
-        <img src="{{ asset($design->image) }}" alt="image">
+        <img src="{{ Storage::disk('s3')->url($design->image) }}" alt="image">
     </div>
 
     <div class="action-bar">

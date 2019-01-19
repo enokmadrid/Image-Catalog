@@ -6,9 +6,7 @@
 
     {{ Form::open(['method' => 'post', 'files' => true, 'url' => '/designs']) }}
 
-
-        {{--<form method="POST" action="/designs" >--}}
-            {{ csrf_field() }}
+        {{ csrf_field() }}
         <div class="form-group">
             {{ Form::label('name', 'Name') }}
             {{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
@@ -31,5 +29,4 @@
 
         {{ Form::submit('Create the design!', array('class' => 'btn btn-primary')) }}
     {!! Form::close() !!}
-    {{--</form>--}}
 @endsection

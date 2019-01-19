@@ -57,17 +57,18 @@ class DesignController extends Controller {
             'image'     => 'required | mimes:jpeg,png,jpg | max:2048',
         ]);
 
-        // Move Image
+
         $imagePath = "";
 
-
+        // Check for Image
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $imageName = time() .'-'. $file->getClientOriginalName();
+            $imageFolder = 'images/';
+            $imagePath = $imageFolder.$imageName;
 
-            $newPath = public_path('images');
-            $imagePath = 'images/'.$imageName;
-            $file->move($newPath, $imageName);
+            // Store image in AWS S3
+            $file->storeAs($imageFolder, $imageName, 's3');
         }
 
         $design = [
@@ -85,6 +86,7 @@ class DesignController extends Controller {
         return Redirect::to('designs');
 
     }
+
 
 
     /**
@@ -126,7 +128,7 @@ class DesignController extends Controller {
 
         $design->fill($request->except('image'));
 
-        // Move Image
+        // Check for Image
         if ($request->hasFile('image')) {
 
             // validate image file
@@ -134,12 +136,13 @@ class DesignController extends Controller {
 
             $file = $request->file('image');
             $imageName = time() .'-'. $file->getClientOriginalName();
+            $imageFolder = 'images/';
 
-            $newPath = public_path('images');
-            $imagePath = 'images/'.$imageName;
-            $file->move($newPath, $imageName);
+            // Store image in AWS S3
+            $file->storeAs($imageFolder, $imageName, 's3');
 
             // update image path to the design item
+            $imagePath = $imageFolder.$imageName;
             $design['image'] = $imagePath;
         }
 

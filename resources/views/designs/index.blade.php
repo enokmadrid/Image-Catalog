@@ -17,7 +17,7 @@
             <div class="panel panel-info">
                 <a href="{{ URL::to('designs/' . $design->id) }}">
                     <div class="panel-body">
-                        <img src="{{ asset($design->image) }}" alt="">
+                        <img src="{{ Storage::disk('s3')->url($design->image) }}" alt="">
                     </div>
                     <div class="panel-footer">
                         <b>{{ $design->name }}</b>
