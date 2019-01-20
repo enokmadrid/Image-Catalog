@@ -20,8 +20,3 @@ Auth::routes();
 Route::get('/home', 'DesignController@index')->name('home');
 Route::resource('designs', 'DesignController');
 
-
-//Route::get('/api/designs', function () {
-//    $designs = \App\Design::all();
-//    return response()->json($designs);
-//});

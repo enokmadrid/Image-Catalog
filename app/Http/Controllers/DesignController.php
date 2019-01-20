@@ -64,8 +64,8 @@ class DesignController extends Controller {
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $imageName = time() .'-'. $file->getClientOriginalName();
-            $imageFolder = 'images/';
-            $imagePath = $imageFolder.$imageName;
+            $imageFolder = 'images';
+            $imagePath = $imageFolder.'/'.$imageName;
 
             // Store image in AWS S3
             $file->storeAs($imageFolder, $imageName, 's3');
@@ -96,6 +96,9 @@ class DesignController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Design $design) {
+        // only show this design if it belongs to current user
+        abort_if($design->user_id !== auth()->id(), 403);
+
         // show the view and pass the design to it
         return view('designs.show', compact('design'));
     }
@@ -107,7 +110,6 @@ class DesignController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit(Design $design) {
-        //
         return view('designs.edit', compact('design'));
     }
 
@@ -136,13 +138,13 @@ class DesignController extends Controller {
 
             $file = $request->file('image');
             $imageName = time() .'-'. $file->getClientOriginalName();
-            $imageFolder = 'images/';
+            $imageFolder = 'images';
+            $imagePath = $imageFolder.'/'.$imageName;
 
             // Store image in AWS S3
             $file->storeAs($imageFolder, $imageName, 's3');
 
             // update image path to the design item
-            $imagePath = $imageFolder.$imageName;
             $design['image'] = $imagePath;
         }
 
