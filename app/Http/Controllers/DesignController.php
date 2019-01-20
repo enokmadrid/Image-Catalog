@@ -25,7 +25,7 @@ class DesignController extends Controller {
     public function index() {
 
         // get all the designs of the user
-        $designs = Auth::user()->designs;
+        $designs = Design::where('owner_id', auth()->id())->get();
 
         // load the view and pass the designs
         return view('designs.index')->with('designs', $designs);
@@ -71,15 +71,17 @@ class DesignController extends Controller {
             $file->storeAs($imageFolder, $imageName, 's3');
         }
 
-        $design = [
+        $attributes = [
             'name'  => $request->name,
             'number'=> $request->number,
             'price' => $request->price,
             'image' => $imagePath,
+            'owner_id' => auth()->id(),
         ];
 
         // create and store by this user
-        Auth::user()->designs()->create($design);
+        Design::create($attributes);
+
 
         // redirect
         Session::flash('message', 'Successfully created design!');
@@ -97,7 +99,7 @@ class DesignController extends Controller {
      */
     public function show(Design $design) {
         // only show this design if it belongs to current user
-        abort_if($design->user_id !== auth()->id(), 403);
+        abort_if($design->owner_id !== auth()->id(), 403);
 
         // show the view and pass the design to it
         return view('designs.show', compact('design'));

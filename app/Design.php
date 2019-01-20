@@ -16,7 +16,7 @@ class Design extends Model
         'number',
         'price',
         'image',
-        'user_id'
+        'owner_id'
     ];
 
 
