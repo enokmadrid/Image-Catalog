@@ -57,19 +57,8 @@ class DesignController extends Controller {
             'image'     => 'required | mimes:jpeg,png,jpg | max:2048',
         ]);
 
-
-        $imagePath = "";
-
-        // Check for Image
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $imageName = time() .'-'. $file->getClientOriginalName();
-            $imageFolder = 'images';
-            $imagePath = $imageFolder.'/'.$imageName;
-
-            // Store image in AWS S3
-            $file->storeAs($imageFolder, $imageName, 's3');
-        }
+        // Store image and save image path
+        $imagePath = $this->storeImage($request);
 
         $attributes = [
             'name'  => $request->name,
@@ -81,7 +70,6 @@ class DesignController extends Controller {
 
         // create and store by this user
         Design::create($attributes);
-
 
         // redirect
         Session::flash('message', 'Successfully created design!');
@@ -130,26 +118,13 @@ class DesignController extends Controller {
             'price'     => 'required | numeric',
         ]);
 
+        // image file not required to continue the request
         $design->fill($request->except('image'));
 
-        // Check for Image
+        // Check for image, Store image and save image path
         if ($request->hasFile('image')) {
-
-            // validate image file
-            $request->validate(['image' => 'required | mimes:jpeg,png,jpg | max:2048']);
-
-            $file = $request->file('image');
-            $imageName = time() .'-'. $file->getClientOriginalName();
-            $imageFolder = 'images';
-            $imagePath = $imageFolder.'/'.$imageName;
-
-            // Store image in AWS S3
-            $file->storeAs($imageFolder, $imageName, 's3');
-
-            // update image path to the design item
-            $design['image'] = $imagePath;
+            $design['image'] = $this->storeImage($request);
         }
-
         $design->save();
 
         // redirect
@@ -169,5 +144,26 @@ class DesignController extends Controller {
 
         Session::flash('message', 'Design deleted successfully!');
         return Redirect::to('designs');
+    }
+
+    /**
+     * Store the image file
+     *
+     * @param Request $request
+     * @return string
+     */
+    private function storeImage(Request $request): string {
+        // validate image file
+        $request->validate(['image' => 'required | mimes:jpeg,png,jpg | max:2048']);
+
+        $file = $request->file('image');
+        $imageName = time() . '-' . $file->getClientOriginalName();
+        $imageFolder = 'images';
+        $imagePath = $imageFolder . '/' . $imageName;
+
+        // Store image in AWS S3
+        $file->storeAs($imageFolder, $imageName, 's3');
+
+        return $imagePath;
     }
 }
